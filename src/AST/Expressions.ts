@@ -115,7 +115,7 @@ export class CastExpression<T extends AnyType> extends Expression<T> {
 }
 
 export class JsonPropertyAccess extends Expression<Json<any>> {
-	constructor(public readonly expression: Expression<Json<any>>, public readonly key: string) {
+	constructor(public readonly expression: Expression<Json<any>>, public readonly key: PropertyKey) {
 		super(tJson());
 	}
 }
@@ -167,8 +167,9 @@ export function val(value: null, preferEscaping?: boolean): ValueExpression<Stan
 export function val(value: string, preferEscaping?: boolean): ValueExpression<TextType>;
 export function val(value: boolean, preferEscaping?: boolean): ValueExpression<BooleanType>;
 export function val(value: number, preferEscaping?: boolean): ValueExpression<IntegerType>;
+export function val(value: symbol, preferEscaping?: boolean): ValueExpression<AnyType>; // hack for TS 2.9 PropertyKey
 export function val<T extends AnyType>(value: GetInType<T>, type: T, preferEscaping?: boolean): ValueExpression<T>;
-export function val(value: string|boolean|number|null, ...other: any[]) {
+export function val(value: string|boolean|number|symbol|null, ...other: any[]) {
 	let preferEscaping: boolean;
 	if (other[0] instanceof Type) {
 		preferEscaping = !!other[1];
@@ -181,7 +182,7 @@ export function val(value: string|boolean|number|null, ...other: any[]) {
 	else if (typeof value === "boolean") t = tBoolean;
 	else if (typeof value === "number") t = tInteger;
 	else if (value === null) t = tNull;
-	else throw new Error(`Unsupported value: '${value}'.`);
+	else throw new Error(`Unsupported value: '${String(value)}'.`);
 
 	return new ValueExpression(t, value, preferEscaping);
 }
@@ -217,11 +218,11 @@ export function toCondition<TColumns extends HardRow>(fromItem: FromItem<TColumn
 
 export type NamedExpressionNameOf<T extends NamedExpression<any, any>> = T["name"];
 
-export class NamedExpression<TColumnName extends string, T extends AnyType> extends Expression<T> {
+export class NamedExpression<TColumnName extends PropertyKey, T extends AnyType> extends Expression<T> {
 	constructor(public readonly name: TColumnName, type: T) { super(type); }
 }
 
-export class Column<TColumnName extends string, T extends AnyType> extends NamedExpression<TColumnName, T> {
+export class Column<TColumnName extends PropertyKey, T extends AnyType> extends NamedExpression<TColumnName, T> {
 	private _fromItem: FromItem<any>;
 	public get fromItem() { return this._fromItem; }
 
@@ -232,19 +233,19 @@ export class Column<TColumnName extends string, T extends AnyType> extends Named
 	}
 }
 
-export class TableColumn<TColumnName extends string, T extends AnyType> extends Column<TColumnName, T> {
+export class TableColumn<TColumnName extends PropertyKey, T extends AnyType> extends Column<TColumnName, T> {
 	constructor(name: TColumnName, type: T, fromItemSetterProvider: (setter: (fromItem: Table<any, any>) => void) => void) {
 		super(name, type, fromItemSetterProvider);
 	}
 }
 
-export class AsColumn<TColumnName extends string, T extends AnyType> extends Column<TColumnName, T> {
+export class AsColumn<TColumnName extends PropertyKey, T extends AnyType> extends Column<TColumnName, T> {
 	constructor(name: TColumnName, type: T, fromItemSetterProvider: (setter: (fromItem: Table<any, any>) => void) => void) {
 		super(name, type, fromItemSetterProvider);
 	}
 }
 
-export class ColumnBoundToExpression<TColumnName extends string, T extends AnyType> extends Column<TColumnName, T> {
+export class ColumnBoundToExpression<TColumnName extends PropertyKey, T extends AnyType> extends Column<TColumnName, T> {
 	constructor(private readonly expression: NamedExpression<TColumnName, T>, fromItemSetterProvider: (setter: (fromItem: FromItem<any>) => void) => void) {
 		super(expression.name, expression.type, fromItemSetterProvider);
 	}

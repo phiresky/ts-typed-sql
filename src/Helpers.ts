@@ -41,9 +41,9 @@ export function objectValues<T extends {}>(obj: T): T[keyof T][] {
 	return result;
 }
 
-export function objectEntries<T extends {}>(obj: T): [keyof T, T[keyof T]][] {
-	const result: [keyof T, T[keyof T]][] = [];
-	for (const prop of Object.getOwnPropertyNames(obj) as (keyof T)[]) {
+export function objectEntries<T extends {}>(obj: T): [Extract<keyof T, string>, T[keyof T]][] {
+	const result: [Extract<keyof T, string>, T[keyof T]][] = [];
+	for (const prop of Object.getOwnPropertyNames(obj) as Extract<keyof T, string>[]) {
 		result.push([prop, obj[prop]]);
 	}
 	return result;

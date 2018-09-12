@@ -32,7 +32,7 @@ export interface SqlGeneratorOptions {
 
 
 export interface ExpressionContext {
-	isColumnNameUnambigous(name: string): boolean;
+	isColumnNameUnambigous(name: PropertyKey): boolean;
 	resolveNamedExpression: boolean;
 	context: Context;
 }
@@ -83,7 +83,7 @@ export abstract class SqlGenerator {
 				...allFromFactors.map(f => objectValues(f.$columns)));
 		}
 		const set = new Set<string>();
-		const duplicates = new Set<string>();
+		const duplicates = new Set<PropertyKey>();
 		for (const col of allColumns) {
 			if (set.has(col.name)) duplicates.add(col.name);
 			else set.add(col.name);
@@ -266,11 +266,11 @@ export abstract class SqlGenerator {
 		return this.quoteSchemaOrTableOrColumnName(name);
 	}
 
-	protected quoteColumnName(name: string): string {
+	protected quoteColumnName(name: PropertyKey): string {
 		return this.quoteSchemaOrTableOrColumnName(name);
 	}
 
-	protected abstract quoteSchemaOrTableOrColumnName(name: string): string;
+	protected abstract quoteSchemaOrTableOrColumnName(name: PropertyKey): string;
 
 	protected referToFromItem(fromItem: FromItem<any>, includeSchema: boolean = true): string {
 		if (fromItem instanceof Table) {
@@ -430,7 +430,7 @@ export abstract class SqlGenerator {
 				})
 				.register(Exprs.JsonPropertyAccess, (e, context) => {
 					const arg = this.expressionToSql(e.expression, context, e.precedenceLevel);
-					return `${arg}->${this.escapeValue(Exprs.val(e.key, true), context)}`;
+					return `${arg}->${this.escapeValue(Exprs.val(e.key as string, true), context)}`;
 				})
 				.register(Exprs.CastExpression, (e, context) => {
 					if (e.isHiddenCast)

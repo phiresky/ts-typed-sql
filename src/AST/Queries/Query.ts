@@ -9,7 +9,7 @@ export type RowToNmdExprs<TRow extends Row> =
 
 export interface NoColumnsSelected { _brand: "NoColumnSelected" }
 export interface MoreThanOneColumnSelected { _brand: "MoreThanOneColumnSelected" }
-export type SingleColumn<TSelectedCols> = NoColumnsSelected|(keyof TSelectedCols)|MoreThanOneColumnSelected;
+export type SingleColumn<TSelectedCols> = NoColumnsSelected|(keyof TSelectedCols)|symbol|MoreThanOneColumnSelected;
 
 export class Query<TReturningRow extends Row, TSingleColumn extends SingleColumn<TReturningRow>> {
 	protected returningColumns: RowToNmdExprs<TReturningRow> = {} as any;
