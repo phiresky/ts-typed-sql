@@ -1,58 +1,58 @@
 {
-  "name": "@phiresky/typed-sql",
-  "version": "0.2.15",
-  "description": "A fully typed sql builder. Works best with TypeScript an Visual Studio Code.",
-  "main": "dist/src/index.js",
-  "directories": {
-    "test": "dist/test"
-  },
-  "keywords": [
-    "sql",
-    "typed",
-    "type",
-    "builder",
-    "database",
-    "typescript"
-  ],
-  "dependencies": {
-    "debug": "^4.0.1",
-    "es7-shim": "^6.0.0",
-    "hediet-framework": "^1.1.1"
-  },
-  "devDependencies": {
-    "@types/debug": "^0.0.30",
-    "@types/mocha": "^5.2.5",
-    "@types/pg": "^7.4.10",
-    "coveralls": "^3.0.2",
-    "mocha": "^5.2.0",
-    "mocha-lcov-reporter": "^1.3.0",
-    "nyc": "^13.0.1",
-    "pg": "^7.4.3",
-    "source-map-support": "^0.5.9",
-    "sql-formatter": "^2.3.1",
-    "typescript": "^3.1.0-dev.20180912"
-  },
-  "scripts": {
-    "build": "tsc",
-    "watch": "tsc --watch",
-    "test": "mocha --require source-map-support/register dist/test/**/*.js",
-    "cover": "nyc --all --reporter lcov --reporter text-summary yarn test"
-  },
-  "author": "Henning Dieterichs",
-  "license": "MIT",
-  "types": "dist/src/index.d.ts",
-  "files": [
-    "dist/src",
-    "src"
-  ],
-  "repository": "hediet/ts-typed-sql",
-  "nyc": {
-    "exclude": [
-      "website"
-    ]
-  },
-  "peerDependencies": {
-    "@types/pg": "^7.4.10",
-    "pg": "^7.4.3"
-  }
+	"name": "@phiresky/typed-sql",
+	"version": "0.2.16",
+	"description": "A fully typed sql builder. Works best with TypeScript an Visual Studio Code.",
+	"main": "dist/src/index.js",
+	"directories": {
+		"test": "dist/test"
+	},
+	"keywords": [
+		"sql",
+		"typed",
+		"type",
+		"builder",
+		"database",
+		"typescript"
+	],
+	"dependencies": {
+		"debug": "^4.0.1",
+		"es7-shim": "^6.0.0",
+		"hediet-framework": "^1.1.1"
+	},
+	"devDependencies": {
+		"@types/debug": "^0.0.30",
+		"@types/mocha": "^5.2.5",
+		"@types/pg": "^7.4.10",
+		"coveralls": "^3.0.2",
+		"mocha": "^5.2.0",
+		"mocha-lcov-reporter": "^1.3.0",
+		"nyc": "^13.0.1",
+		"pg": "^7.4.3",
+		"source-map-support": "^0.5.9",
+		"sql-formatter": "^2.3.1",
+		"typescript": "^3.1.0-dev.20180912"
+	},
+	"scripts": {
+		"build": "tsc",
+		"watch": "tsc --watch",
+		"test": "mocha --require source-map-support/register dist/test/**/*.js",
+		"cover": "nyc --all --reporter lcov --reporter text-summary yarn test"
+	},
+	"author": "Henning Dieterichs",
+	"license": "MIT",
+	"types": "dist/src/index.d.ts",
+	"files": [
+		"dist/src",
+		"src"
+	],
+	"repository": "hediet/ts-typed-sql",
+	"nyc": {
+		"exclude": [
+			"website"
+		]
+	},
+	"peerDependencies": {
+		"@types/pg": "^7.4.10",
+		"pg": "^7.4.3"
+	}
 }
