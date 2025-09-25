@@ -22,15 +22,15 @@ export interface Columns {
 }
 
 export type RowToColumns<TColumns extends HardRow>
-	= {[TName in keyof TColumns]: Column<TName, TColumns[TName]> };
+	= {[TName in keyof TColumns & string]: Column<TName, TColumns[TName]> };
 
 export type ColumnsToRow<TColumns extends Columns>
-	= {[TName in keyof TColumns]: ExpressionTypeOf<TColumns[TName]> };
+	= {[TName in keyof TColumns & string]: ExpressionTypeOf<TColumns[TName]> };
 
 export type ColumnsToOutRow<TColumns extends Columns> = MapOutType<ColumnsToRow<TColumns>>;
 
 export class FromFactor {
-	_brand: "FromFactor";
+	_brand!: "FromFactor";
 
 	public static getAllFromFactors(factor: FromFactor): FromItem<any>[] {
 		if (factor instanceof FromItem) return [factor];

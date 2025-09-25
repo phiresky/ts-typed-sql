@@ -108,10 +108,10 @@ export class UpdateQuery<TColumnsToUpdate extends Row, TReturningColumns extends
 	public returning<T1 extends NmdExpr, T2 extends NmdExpr, T3 extends NmdExpr, T4 extends NmdExpr, T5 extends NmdExpr, T6 extends NmdExpr, T7 extends NmdExpr, T8 extends NmdExpr>(expr1: T1, expr2: T2, expr3: T3, expr4: T4, expr5: T5, expr6: T6, expr7: T7, expr8: T8): UpdateQuery<TColumnsToUpdate, Simplify<TReturningColumns & NmdExprToRow<T1> & NmdExprToRow<T2> & NmdExprToRow<T3> & NmdExprToRow<T4> & NmdExprToRow<T5> & NmdExprToRow<T6> & NmdExprToRow<T7> & NmdExprToRow<T8>>, TFromTblCols, MoreThanOneColumnSelected>;
 
 	/** Selects a single column that is currently in scope. */
-	public returning<TColumnName extends keyof TFromTblCols>(this: UpdateQuery<TColumnsToUpdate, TReturningColumns, TFromTblCols, NoColumnsSelected>, column1: TColumnName): UpdateQuery<TColumnsToUpdate, Simplify<TReturningColumns & {[TName in TColumnName]: TFromTblCols[TName]}>, TFromTblCols, TColumnName>;
+	public returning<TColumnName extends keyof TFromTblCols & string>(this: UpdateQuery<TColumnsToUpdate, TReturningColumns, TFromTblCols, NoColumnsSelected>, column1: TColumnName): UpdateQuery<TColumnsToUpdate, Simplify<TReturningColumns & {[TName in TColumnName]: TFromTblCols[TName]}>, TFromTblCols, TColumnName>;
 
 	/** Selects columns that are currently in scope. */
-	public returning<TColumnNames extends keyof TFromTblCols>(...columns: TColumnNames[]): UpdateQuery<TColumnsToUpdate, Simplify<TReturningColumns & {[TName in TColumnNames]: TFromTblCols[TName]}>, TFromTblCols, MoreThanOneColumnSelected>;
+	public returning<TColumnNames extends keyof TFromTblCols & string>(...columns: TColumnNames[]): UpdateQuery<TColumnsToUpdate, Simplify<TReturningColumns & {[TName in TColumnNames]: TFromTblCols[TName]}>, TFromTblCols, MoreThanOneColumnSelected>;
 
 	public returning(this: ErrorMessage<"Expressions must have names. Use expr.as('name').">, ...expr: Expression<any>[]): "Error";
 

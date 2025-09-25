@@ -5,11 +5,11 @@ import { RowDescriptionToRow } from "../Table";
 import { objectValues, objectEntries } from "../../Helpers";
 
 export type RowToNmdExprs<TRow extends Row> =
-	{ [TName in keyof TRow]: NamedExpression<TName, TRow[TName]> };
+	{ [TName in keyof TRow& string]: NamedExpression<TName, TRow[TName]> };
 
 export interface NoColumnsSelected { _brand: "NoColumnSelected" }
 export interface MoreThanOneColumnSelected { _brand: "MoreThanOneColumnSelected" }
-export type SingleColumn<TSelectedCols> = NoColumnsSelected|(keyof TSelectedCols)|MoreThanOneColumnSelected;
+export type SingleColumn<TSelectedCols> = NoColumnsSelected|(keyof TSelectedCols & string)|MoreThanOneColumnSelected;
 
 export class Query<TReturningRow extends Row, TSingleColumn extends SingleColumn<TReturningRow>> {
 	protected returningColumns: RowToNmdExprs<TReturningRow> = {} as any;
@@ -80,7 +80,7 @@ export class Query<TReturningRow extends Row, TSingleColumn extends SingleColumn
 		else {
 			castToColumns = true;
 			for (const [name, type] of objectEntries(columns)) {
-				newColumns[name] = new AsColumn(name, type, setter => setters.push(setter));
+				newColumns[name] = new AsColumn(name, type, setter => setters.push(setter as (fromItem: FromItem<any>) => void));
 			}
 		}
 

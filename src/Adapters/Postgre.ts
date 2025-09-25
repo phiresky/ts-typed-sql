@@ -9,6 +9,7 @@ import { Query } from "../AST/Queries/Query";
 import { DbQueryService, SimpleDbQueryService } from "../DbConnection";
 import { EventEmitter, ISubscribable } from "hediet-framework/api/events";
 import { Deferred } from "hediet-framework/api/synchronization";
+import { Row } from '../AST/FromFactor';
 
 /* TODO
 export class PostgreQueryServiceFactory {
@@ -31,7 +32,7 @@ export class PostgreQueryService implements DbQueryService {
 		this.sqlGenerator = new PostgreSqlGenerator(sqlGeneratorOptions);
 	}
 
-	public exec<TRow>(query: Query<TRow, any>): Promise<MapOutType<TRow>[]>;
+	public exec<TRow extends Row>(query: Query<TRow, any>): Promise<MapOutType<TRow>[]>;
 	public exec<TRow>(statement: SqlStatement): Promise<void>;
 	public exec(query: SqlStatement): Promise<any> {
 		return this.execClient(query);
@@ -90,7 +91,7 @@ export class PostgreQueryService implements DbQueryService {
 	private readonly PostgreExclusiveQueryService = class PostgreExclusiveQueryService implements SimpleDbQueryService {
 		constructor(private readonly client: PgClient, private readonly queryService: PostgreQueryService) {}
 
-		public exec<TColumns>(query: Query<TColumns, any>): Promise<TColumns[]>;
+		public exec<TColumns extends Record<string, any>>(query: Query<TColumns, any>): Promise<TColumns[]>;
 		public exec<TColumns>(statement: SqlStatement): Promise<void>;
 		public async exec(query: SqlStatement): Promise<any> {
 			return this.queryService.execClient(query, this.client);

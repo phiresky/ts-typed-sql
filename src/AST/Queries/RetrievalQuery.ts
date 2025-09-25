@@ -39,15 +39,15 @@ export class RetrievalQuery<TRow extends Row, TSingleColumn extends SingleColumn
 	/**
 	 * Wraps this query as expression. The query must return exactly one row with exactly one column.
 	 */
-	public asExpression<TSingleColumn2 extends keyof TRow>
+	public asExpression<TSingleColumn2 extends keyof TRow & string>
 		(this: RetrievalQuery<TRow, TSingleColumn2>): Expression<TRow[TSingleColumn2]> {
-		const column = this.returningColumns[this.singleColumn];
-		return new RetrievalQueryAsExpression<TRow[TSingleColumn2]>(this, column.type);
+		const column = this.returningColumns[this.singleColumn as string & keyof typeof this.returningColumns];
+		return new RetrievalQueryAsExpression<TRow[TSingleColumn2]>(this, column.type as TRow[TSingleColumn2]);
 	}
 }
 
 
-export class UnionQuery<TColumns, TSingleColumn extends SingleColumn<TColumns>> extends RetrievalQuery<TColumns, TSingleColumn> {
+export class UnionQuery<TColumns extends Record<string, any>, TSingleColumn extends SingleColumn<TColumns>> extends RetrievalQuery<TColumns, TSingleColumn> {
 	constructor(public readonly query1: RetrievalQuery<TColumns, TSingleColumn>, public readonly query2: RetrievalQuery<TColumns, any>, public readonly isUnionAll: boolean) {
 		super();
 
@@ -57,13 +57,13 @@ export class UnionQuery<TColumns, TSingleColumn extends SingleColumn<TColumns>> 
 	}
 }
 
-export function union<TColumns, TSingleColumn extends SingleColumn<TColumns>>(query1: RetrievalQuery<TColumns, TSingleColumn>, ...queries: RetrievalQuery<any, any>[])
+export function union<TColumns extends Record<string, any>, TSingleColumn extends SingleColumn<TColumns>>(query1: RetrievalQuery<TColumns, TSingleColumn>, ...queries: RetrievalQuery<any, any>[])
 : RetrievalQuery<TColumns, TSingleColumn> {
 
 	return queries.reduce((p, c) => new UnionQuery(p, c, false), query1);
 }
 
-export function unionAll<TColumns, TSingleColumn extends SingleColumn<TColumns>>(query1: RetrievalQuery<TColumns, TSingleColumn>, ...queries: RetrievalQuery<any, any>[])
+export function unionAll<TColumns extends Record<string, any>, TSingleColumn extends SingleColumn<TColumns>>(query1: RetrievalQuery<TColumns, TSingleColumn>, ...queries: RetrievalQuery<any, any>[])
 	: RetrievalQuery<TColumns, TSingleColumn> {
 
 	return queries.reduce((p, c) => new UnionQuery(p, c, true), query1);

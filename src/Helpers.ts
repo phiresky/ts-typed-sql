@@ -41,15 +41,16 @@ export function objectValues<T extends {}>(obj: T): T[keyof T][] {
 	return result;
 }
 
-export function objectEntries<T extends {}>(obj: T): [keyof T, T[keyof T]][] {
-	const result: [keyof T, T[keyof T]][] = [];
+export function objectEntries<T extends {}>(obj: T): [keyof T & string, T[keyof T]][] {
+	const result: [keyof T & string, T[keyof T]][] = [];
 	for (const prop of Object.getOwnPropertyNames(obj) as (keyof T)[]) {
+		if (typeof prop !== "string") continue;
 		result.push([prop, obj[prop]]);
 	}
 	return result;
 }
 
-export function combine<T1, T2>(props: T1, and: T2): T1 & T2 {
+export function combine<T1 extends {}, T2 extends {}>(props: T1, and: T2): T1 & T2 {
 	const result: any = {};
 	for (const [prop, val] of objectEntries(props)) {
 		result[prop] = val;
@@ -64,7 +65,7 @@ export class DynamicDispatcher<TBase, TArgs, TResult> {
 	private registeredHandlers = new Map<Function, (subject: TBase, arg: TArgs) => TResult>();
 
 	public register<T extends TBase>(clazz: (new (...args: any[]) => T) | Function, handler: (subject: T, arg: TArgs) => TResult) {
-		this.registeredHandlers.set(clazz, handler);
+		this.registeredHandlers.set(clazz, handler as (subject: TBase, arg: TArgs) => TResult);
 		return this;
 	}
 

@@ -24,7 +24,7 @@ export function resolveColumnReference<TExpr extends Expression<any>, TFromTblCo
 
 	if (expression instanceof Expression) return expression as TExpr;
 
-	if (typeof expression !== "string") throw new Error(`Expression must be either of type string or of type Expression, but was '${expression}'.`);
+	if (typeof expression !== "string") throw new Error(`Expression must be either of type string or of type Expression, but was '${String(expression)}'.`);
 
 	if (!fromItem) {
 		throw new Error(`Columns cannot be referenced by string if no table is specified to select from. `

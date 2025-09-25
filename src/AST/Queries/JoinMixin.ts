@@ -61,7 +61,7 @@ export function doJoin<TFromItemColumns, TSelf>(self: TSelf, currentFrom: FromFa
 	});
 }
 
-export class JoinConditionBuilder<TFromItemColumns, TReturn> {
+export class JoinConditionBuilder<TFromItemColumns extends Record<string, any>, TReturn> {
 	constructor(private readonly fromItem: FromItem<any>, private readonly onJoin: (joined: FromItem<any>, condition: Expression<BooleanType>) => TReturn) { }
 
 	/**

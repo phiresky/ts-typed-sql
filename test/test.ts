@@ -2,7 +2,8 @@ import { objectValues, toObject } from '../src/Helpers';
 import {
 	fromItemTypes,
 	union, unionAll, GetOutType, select, from, table, DbConnection, insertInto, FromItemToOutRow, MapOutType, RowToColumns,
-	update, val, defaultValue, SqlGenerator, PostgreQueryService, concat, not, deleteFrom, Query, PostgreSqlGenerator, values, Expression, tInteger, tText, tJson, ExpressionTypeOf, FromItem, HardRow, tBoolean
+	update, val, defaultValue, SqlGenerator, PostgreQueryService, concat, not, deleteFrom, Query, PostgreSqlGenerator, values, Expression, tInteger, tText, tJson, ExpressionTypeOf, FromItem, HardRow, tBoolean,
+	Row
 } from "../src/index";
 import * as assert from "assert";
 import { regressionTests } from './extracted-regression-tests';
@@ -27,7 +28,7 @@ const contactAddresses = table("contact_addresses",
 	}
 );
 
-function check<T2>(query: Query<T2, any>, expectedSql: string, args: any[] = [], skipQuoting = true): MapOutType<T2> {
+function check<T2 extends Row>(query: Query<T2, any>, expectedSql: string, args: any[] = [], skipQuoting = true): MapOutType<T2> {
 	const generator = new PostgreSqlGenerator({ shortenColumnNameIfUnambigous: true, skipQuotingIfNotRequired: skipQuoting });
 	const sql = generator.toSql(query);
 

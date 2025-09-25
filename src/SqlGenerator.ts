@@ -187,8 +187,8 @@ export abstract class SqlGenerator {
 
 		const expressionContext = this.createExpressionContext([data.from, data.table], context);
 
-		sql += " SET " + objectEntries(data.updatedColumns).map(([name, value]: [string, Exprs.Expression<any>]) =>
-			`${this.quoteColumnName(name)} = ${this.expressionToSql(value, expressionContext)}`
+		sql += " SET " + objectEntries(data.updatedColumns).map(([name, value]: [string, Exprs.Expression<any> | undefined]) =>
+			`${this.quoteColumnName(name)} = ${this.expressionToSql(value!, expressionContext)}`
 		).join(", ");
 
 		if (data.from) {

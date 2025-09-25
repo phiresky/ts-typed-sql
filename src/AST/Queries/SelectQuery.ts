@@ -74,11 +74,11 @@ export class SelectQuery<TSelectedCols extends Row, TFromTblCols extends Row, TS
 	public select<T1 extends NmdExpr, T2 extends NmdExpr, T3 extends NmdExpr, T4 extends NmdExpr, T5 extends NmdExpr, T6 extends NmdExpr, T7 extends NmdExpr, T8 extends NmdExpr>(expr1: T1, expr2: T2, expr3: T3, expr4: T4, expr5: T5, expr6: T6, expr7: T7, expr8: T8): SelectQuery<Simplify<TSelectedCols & NmdExprToRow<T1> & NmdExprToRow<T2> & NmdExprToRow<T3> & NmdExprToRow<T4> & NmdExprToRow<T5> & NmdExprToRow<T6> & NmdExprToRow<T7> & NmdExprToRow<T8>>, TFromTblCols, MoreThanOneColumnSelected>;
 
 	/** Selects a single column that is currently in scope. */
-	public select<TColumnName extends keyof TFromTblCols>(this: SelectQuery<TSelectedCols, TFromTblCols, NoColumnsSelected>, column1: TColumnName): SelectQuery<Simplify<TSelectedCols & {[TName in TColumnName]: TFromTblCols[TName]}>, TFromTblCols, TColumnName>;
+	public select<TColumnName extends keyof TFromTblCols & string>(this: SelectQuery<TSelectedCols, TFromTblCols, NoColumnsSelected>, column1: TColumnName): SelectQuery<Simplify<TSelectedCols & {[TName in TColumnName]: TFromTblCols[TName]}>, TFromTblCols, TColumnName>;
 
 	/** Selects columns that are currently in scope. */
-	public select<TColumnNames extends keyof TFromTblCols>(...columns: TColumnNames[]): SelectQuery<Simplify<TSelectedCols & {[TName in TColumnNames]: TFromTblCols[TName]}>, TFromTblCols, MoreThanOneColumnSelected>;
-	
+	public select<TColumnNames extends keyof TFromTblCols & string>(...columns: TColumnNames[]): SelectQuery<Simplify<TSelectedCols & {[TName in TColumnNames]: TFromTblCols[TName]}>, TFromTblCols, MoreThanOneColumnSelected>;
+
 	public select(this: ErrorMessage<"Expressions must have names. Use expr.as('name').">, ...expr: Expression<any>[]): "Error";
 
 	public select(...args: ((keyof TFromTblCols) | NmdExpr | AllExpression<any> | Expression<any>)[]): any {
@@ -117,7 +117,7 @@ export class SelectQuery<TSelectedCols extends Row, TFromTblCols extends Row, TS
 			if (e instanceof Expression) return e.asc();
 			if (isOrderingAsc(e)) return resolveColumnReference(this.lastFromItem, e.asc).asc();
 			if (isOrderingDesc(e)) return resolveColumnReference(this.lastFromItem, e.desc).desc();
-			throw new Error(`Unexpected value in orderBy: '${e}'.`);
+			throw new Error(`Unexpected value in orderBy: '${String(e)}'.`);
 		});
 
 		this._orderBys.push(...exprs);
@@ -262,6 +262,6 @@ export function from<TTableColumns extends HardRow>(table: FromItem<TTableColumn
 }
 
 export const select = secondWithTypeOfFirst(new SelectQuery<{}, {}, NoColumnsSelected>().select, function (...args: any[]): any {
-	const result = new SelectQuery<{}, {}, NoColumnsSelected>();
-	return result.select.call(result, ...args);
+		const result = new SelectQuery<{}, {}, NoColumnsSelected>();
+		return result.select.call(result, ...args);
 });

@@ -36,7 +36,7 @@ class SmallInt extends Type<number, number, "smallint"> {
 
 // fake integer brand to allow .plus, .minus etc until hediet fixes his lib
 class BigInt extends Type<number, number, "integer"> {
-    public readonly _brand: "integer";
+    public declare readonly _brand: "integer";
     public name = "bigint";
 
     serialize(arg: number): string | number | boolean {
@@ -49,7 +49,7 @@ class BigInt extends Type<number, number, "integer"> {
 }
 
 class DoublePrecision extends Type<number, number, "double precision"> {
-    public readonly _brand: "double precision";
+    public declare readonly _brand: "double precision";
     public name = "double precision";
 
     serialize(arg: number): string | number | boolean {
@@ -478,7 +478,10 @@ const {
     transferState
 } = platform;
 class DynamicSchema<T extends string> {
-    constructor(private schema: string) {}
+    schema!: string;
+    constructor(schema: string) {
+        this.schema = schema;
+    }
 
     games = table(
         { schema: this.schema, name: "games" },

@@ -73,7 +73,7 @@ export function table(tableName: string | TableName, requiredColumns: RowDescrip
 	const setters: ((fromItem: FromItem<any>) => void)[] = [];
 	const toTableColumn = (name: string, columnType: AnyType) => {
 		if (!columnType) throw new Error(`Column '${name}' has no type.`);
-		return new TableColumn(name, columnType, setter => setters.push(setter));
+		return new TableColumn(name, columnType, setter => setters.push(setter as (fromItem: FromItem<any>) => void));
 	};
 
 	const reqColumns = toObject(objectEntries(requiredColumns)

@@ -9,9 +9,9 @@ export type GetInType<TType extends {_inType: any}> = TType["_inType"];
 export type GetOutType<TType extends {_outType: any}> = TType["_outType"];
 
 export abstract class Type<TInType, TOutType, TBrand extends string> {
-	public readonly _brand: TBrand;
-	_inType: TInType;
-	_outType: TOutType;
+	public readonly _brand!: TBrand;
+	_inType!: TInType;
+	_outType!: TOutType;
 
 	public abstract name: string;
 
@@ -99,10 +99,10 @@ export class Json<T extends any> extends Type<T, T, "json"> {
 	}
 }
 
-export class Record<T> extends Type<never, string, "record"> {
+export class Record<T extends { [name: string]: any }> extends Type<never, string, "record"> {
 	public name = "RECORD";
 
-	_recordType: T;
+	_recordType!: T;
 
 	serialize(arg: never): string|number|boolean {
 		throw "";
@@ -113,7 +113,7 @@ export class Record<T> extends Type<never, string, "record"> {
 	}
 }
 
-export function tRecord<T>() {
+export function tRecord<T extends { [name: string]: any }>() {
 	return new Record<T>();
 }
 

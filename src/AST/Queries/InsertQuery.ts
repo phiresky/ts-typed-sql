@@ -17,7 +17,7 @@ export function insertInto<TTable extends Table<any, any>>(table: TTable):
 	return new InsertQueryBuilder<TableRequiredColumns<TTable>, TableOptionalColumns<TTable>>(table);
 }
 
-export type InsertRows<TRequiredColumns, TOptionalColumns> = (MapExpressionOrInputValue<TRequiredColumns> & Partial<MapExpressionOrInputValue<TOptionalColumns>>)[];
+export type InsertRows<TRequiredColumns extends { [key: string]: any }, TOptionalColumns extends { [key: string]: any }> = (MapExpressionOrInputValue<TRequiredColumns> & Partial<MapExpressionOrInputValue<TOptionalColumns>>)[];
 export type InsertRowQuery<TRequiredColumns, TOptionalColumns> = RetrievalQuery<TRequiredColumns & Partial<TOptionalColumns>, any>;
 
 /**
@@ -99,7 +99,7 @@ export class InsertQuery<TTableColumns extends Row, TReturningColumns extends Ro
 	public returning<T1 extends NmdExpr, T2 extends NmdExpr, T3 extends NmdExpr, T4 extends NmdExpr, T5 extends NmdExpr, T6 extends NmdExpr, T7 extends NmdExpr, T8 extends NmdExpr>(expr1: T1, expr2: T2, expr3: T3, expr4: T4, expr5: T5, expr6: T6, expr7: T7, expr8: T8): InsertQuery<TTableColumns, Simplify<TReturningColumns & NmdExprToRow<T1> & NmdExprToRow<T2> & NmdExprToRow<T3> & NmdExprToRow<T4> & NmdExprToRow<T5> & NmdExprToRow<T6> & NmdExprToRow<T7> & NmdExprToRow<T8>>, MoreThanOneColumnSelected>;
 
 	/** Selects a single column that is currently in scope. */
-	public returning<TColumnName extends keyof TTableColumns>(this: InsertQuery<TTableColumns, TReturningColumns, NoColumnsSelected>, column1: TColumnName): InsertQuery<TTableColumns, Simplify<TReturningColumns & {[TName in TColumnName]: TTableColumns[TName]}>, TColumnName>;
+	public returning<TColumnName extends keyof TTableColumns & string>(this: InsertQuery<TTableColumns, TReturningColumns, NoColumnsSelected>, column1: TColumnName): InsertQuery<TTableColumns, Simplify<TReturningColumns & {[TName in TColumnName]: TTableColumns[TName]}>, TColumnName>;
 
 	/** Selects columns that are currently in scope. */
 	public returning<TColumnNames extends keyof TTableColumns>(...columns: TColumnNames[]): InsertQuery<TTableColumns, Simplify<TReturningColumns & {[TName in TColumnNames]: TTableColumns[TName]}>, MoreThanOneColumnSelected>;

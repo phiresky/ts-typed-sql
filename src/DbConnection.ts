@@ -50,7 +50,7 @@ export class DbQueryInterface {
 	 * Executes a query which only selects a single column and returns a list of values.
 	 * @param query A query which only selects a single column.
 	 */
-	public async values<TRow extends Row, TColumn extends keyof TRow>(query: Query<TRow, TColumn>): Promise<GetOutType<TRow[TColumn]>[]> {
+	public async values<TRow extends Row, TColumn extends keyof TRow & string>(query: Query<TRow, TColumn>): Promise<GetOutType<TRow[TColumn]>[]> {
 		const rows = await this.exec(query);
 		return rows.map(r => r[query.singleColumn]);
 	}
@@ -102,23 +102,23 @@ export class DbQueryInterface {
 		return rows[0];
 	}
 
-	public async firstOrUndefinedValue<TRow extends Row, TColumn extends keyof TRow>(query: Query<TRow, TColumn>): Promise<GetOutType<TRow[TColumn]> | undefined> {
+	public async firstOrUndefinedValue<TRow extends Row, TColumn extends keyof TRow & string>(query: Query<TRow, TColumn>): Promise<GetOutType<TRow[TColumn]> | undefined> {
 		const row = await this.firstOrUndefined(query);
 		if (!row) return undefined;
 		return row[query.singleColumn];
 	}
 
-	public async firstValue<TRow extends Row, TColumn extends keyof TRow>(query: Query<TRow, TColumn>): Promise<GetOutType<TRow[TColumn]>> {
+	public async firstValue<TRow extends Row, TColumn extends keyof TRow & string>(query: Query<TRow, TColumn>): Promise<GetOutType<TRow[TColumn]>> {
 		const row = await this.first(query);
 		return row[query.singleColumn];
 	}
 
-	public async singleValue<TRow extends Row, TColumn extends keyof TRow>(query: Query<TRow, TColumn>): Promise<GetOutType<TRow[TColumn]>> {
+	public async singleValue<TRow extends Row, TColumn extends keyof TRow & string>(query: Query<TRow, TColumn>): Promise<GetOutType<TRow[TColumn]>> {
 		const row = await this.single(query);
 		return row[query.singleColumn];
 	}
 
-	public async singleOrUndefinedValue<TRow extends Row, TColumn extends keyof TRow>(query: Query<TRow, TColumn>): Promise<GetOutType<TRow[TColumn]> | undefined> {
+	public async singleOrUndefinedValue<TRow extends Row, TColumn extends keyof TRow & string>(query: Query<TRow, TColumn>): Promise<GetOutType<TRow[TColumn]> | undefined> {
 		const row = await this.singleOrUndefined(query);
 		if (!row) return undefined;
 		return row[query.singleColumn];
@@ -190,12 +190,11 @@ export class DbConnection extends DbQueryInterface {
 				result = { success: false, error: err };
 			}
 
-			if (result.success) {
+			if (result.success === true) {
 				if (queryInterface.isTransactionOpen)
 					await queryInterface.commit();
 				return result.result;
-			}
-			else {
+			} else {
 				if (queryInterface.isTransactionOpen)
 					await queryInterface.rollback();
 				throw result.error;

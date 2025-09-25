@@ -68,7 +68,7 @@ export abstract class Expression<T extends AnyType> {
 	public not(this: Expression<BooleanType>): Expression<BooleanType> { return new NotExpression(this); }
 
 	public isIn(values: ExpressionOrInputValue<T>[]): Expression<BooleanType> { return new IsInValuesExpression(this, values.map(v => normalize(this.type, v))); }
-	public isInQuery<TRow extends { [name: string]: AnyType }, TSingleColumn extends keyof TRow>(this: Expression<TRow[TSingleColumn]>,
+	public isInQuery<TRow extends { [name: string]: AnyType }, TSingleColumn extends keyof TRow & string>(this: Expression<TRow[TSingleColumn]>,
 		values: RetrievalQuery<TRow, TSingleColumn>): Expression<BooleanType> { return new IsInQueryExpression(this, values); }
 	
 	public abs(this: Expression<IntegerType>): Expression<IntegerType> { return new KnownFunctionInvocation("abs", [this], tInteger); }
@@ -97,11 +97,11 @@ export abstract class Expression<T extends AnyType> {
 	public asc(): Ordering<Expression<T>> { return { asc: this } };
 	public desc(): Ordering<Expression<T>> { return { desc: this } };
 
-	public toJson<TColumns>(this: Expression<Record<TColumns>>): Expression<Json<RecordTypeToJson<Record<TColumns>>>> {
+	public toJson<TColumns extends { [name: string]: any }>(this: Expression<Record<TColumns>>): Expression<Json<RecordTypeToJson<Record<TColumns>>>> {
 		return new KnownFunctionInvocation("row_to_json", [this], tJson<RecordTypeToJson<Record<TColumns>>>());
 	}
 
-	public prop<TKey extends keyof GetInType<ExpressionTypeOf<this>>>(this: Expression<Json<any>>, key: TKey): Expression<Json<GetInType<ExpressionTypeOf<this>>[TKey]>> {
+	public prop<TKey extends keyof GetInType<ExpressionTypeOf<this>> & string>(this: Expression<Json<any>>, key: TKey): Expression<Json<GetInType<ExpressionTypeOf<this>>[TKey]>> {
 		return new JsonPropertyAccess(this, key);
 	}
 }
@@ -140,7 +140,7 @@ export function and(...expressions: (Expression<BooleanType> | undefined)[]): Ex
 export function and(...expressions: (Expression<BooleanType> | undefined)[]): Expression<BooleanType>|undefined {
 	return expressions
 		.filter(expr => !!expr)
-		.reduce((prev, cur) => prev ? prev.and(cur!) : cur, undefined);
+		.reduce<Expression<BooleanType> | undefined>((prev, cur) => prev ? prev.and(cur!) : cur, undefined);
 }
 
 export function or(expression1: Expression<BooleanType>, ...expressions: Expression<BooleanType>[]): Expression<BooleanType>;
@@ -148,7 +148,7 @@ export function or(...expressions: (Expression<BooleanType> | undefined)[]): Exp
 export function or(...expressions: (Expression<BooleanType> | undefined)[]): Expression<BooleanType>|undefined {
 	return expressions
 		.filter(expr => !!expr)
-		.reduce((prev, cur) => prev ? prev.or(cur!) : cur, undefined);
+		.reduce<Expression<BooleanType> | undefined>((prev, cur) => prev ? prev.or(cur!) : cur, undefined);
 }
 
 export function nullif<T extends AnyType>(expression1: Expression<T>, expression2: ExpressionOrInputValue<T>): Expression<T> {
@@ -222,7 +222,7 @@ export class NamedExpression<TColumnName extends string, T extends AnyType> exte
 }
 
 export class Column<TColumnName extends string, T extends AnyType> extends NamedExpression<TColumnName, T> {
-	private _fromItem: FromItem<any>;
+	private _fromItem!: FromItem<any>;
 	public get fromItem() { return this._fromItem; }
 
 	constructor(name: TColumnName, type: T, fromItemSetterProvider: (setter: (fromItem: FromItem<any>) => void) => void) {
